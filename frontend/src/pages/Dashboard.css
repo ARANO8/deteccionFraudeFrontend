@@ -1,0 +1,47 @@
+.dash-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.alerta-card {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+}
+
+.rojo {
+  background: #ffe5e5;
+  color: #b30000;
+  border-color: #ffcccc;
+}
+
+.amarillo {
+  background: #fff8e1;
+  color: #9c6f00;
+  border-color: #ffe082;
+}
+
+.verde {
+  background: #e6ffed;
+  color: #006400;
+  border-color: #b2dfdb;
+}
+
+.btn-volver {
+  padding: 10px 20px;
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-volver:hover {
+  background-color: #005f8a;
+}

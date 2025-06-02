@@ -1,0 +1,90 @@
+/* Fondo general */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to right, #063852, #0d617b);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Layout horizontal en 2 columnas */
+.trans-wrapper {
+  display: flex;
+  height: 600px;
+  width: 1200px;
+}
+
+/* Formulario */
+.trans-form {
+  flex: 1;
+  background: #3f87a6;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.trans-form h2 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+form input {
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+}
+
+.checkbox {
+  color: #fff;
+  font-size: 14px;
+  margin-top: 0.5rem;
+}
+
+button {
+  margin-top: 1rem;
+  padding: 12px;
+  font-size: 16px;
+  background: #d3eaf2;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #b4d3dd;
+}
+
+/* Panel derecho */
+.trans-info {
+  flex: 1;
+  background: #084f76;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.trans-info h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.trans-info p {
+  font-size: 1.1rem;
+  max-width: 400px;
+}
