@@ -11,71 +11,125 @@ body {
 /* Layout horizontal en 2 columnas */
 .trans-wrapper {
   display: flex;
-  height: 600px;
-  width: 1200px;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: #f4f8fb;
+  padding-top: 40px;
 }
 
 /* Formulario */
 .trans-form {
-  flex: 1;
-  background: #3f87a6;
-  padding: 3rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.12);
+  padding: 2rem 2rem 1.5rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: stretch;
 }
 
 .trans-form h2 {
-  color: white;
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  color: #084f76;
+  margin-bottom: 1.2rem;
+  text-align: center;
 }
 
-form {
+.dashboard-btn {
+  margin-bottom: 1.2rem;
+  background: #3f87a6;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.dashboard-btn:hover {
+  background: #084f76;
+}
+
+.trans-form form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-form input {
-  padding: 12px;
-  border-radius: 6px;
+.input-group {
+  margin-bottom: 0;
+}
+
+.input-group label {
+  color: #084f76;
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #b4d3dd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #f7fafc;
+  color: #222;
+  box-sizing: border-box;
+  margin-top: 2px;
+}
+
+/* Estilos para campos de solo lectura */
+.input-group input[readonly] {
+  background-color: #e0e0e0;
+  color: #888;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.trans-form button[type="submit"] {
+  background: #3f87a6;
+  color: #fff;
   border: none;
-  font-size: 14px;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.trans-form button[type="submit"]:hover {
+  background: #084f76;
 }
 
 .checkbox {
-  color: #fff;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #084f76;
+  font-size: 0.98rem;
   margin-top: 0.5rem;
-}
-
-button {
-  margin-top: 1rem;
-  padding: 12px;
-  font-size: 16px;
-  background: #d3eaf2;
-  color: black;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-button:hover {
-  background: #b4d3dd;
 }
 
 /* Panel derecho */
 .trans-info {
   flex: 1;
-  background: #084f76;
-  color: white;
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 1rem;
+  color: #084f76;
+  font-size: 0.98rem;
+  box-shadow: 0 0 6px rgba(0,0,0,0.06);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -87,4 +141,11 @@ button:hover {
 .trans-info p {
   font-size: 1.1rem;
   max-width: 400px;
+}
+
+@media (max-width: 500px) {
+  .trans-form {
+    padding: 1rem;
+    max-width: 98vw;
+  }
 }

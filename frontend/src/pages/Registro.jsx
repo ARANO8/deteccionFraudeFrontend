@@ -1,17 +1,23 @@
 import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Spinner from "../components/Spinner";
+import InputField from "../components/InputField";
 
 const Registro = () => {
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [nombre, setNombre] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const manejarRegistro = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const cred = await createUserWithEmailAndPassword(auth, correo, contrasena);
 
@@ -21,23 +27,52 @@ const Registro = () => {
         correo,
         nombre,
         rol: "admin",
-        fechaRegistro: new Date().toLocaleString(),
+        fechaRegistro: Timestamp.now(),
       });
 
-      alert("Usuario registrado con éxito");
+      toast.success("Usuario registrado con éxito");
       navigate("/login");
     } catch (error) {
-      alert("Error al registrar: " + error.message);
+      toast.error("Error al registrar: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={manejarRegistro}>
-      <input type="text" placeholder="Nombre" onChange={(e) => setNombre(e.target.value)} />
-      <input type="email" placeholder="Correo" onChange={(e) => setCorreo(e.target.value)} />
-      <input type="password" placeholder="Contraseña" onChange={(e) => setContrasena(e.target.value)} />
-      <button type="submit">Registrarse</button>
-    </form>
+    <>
+      <form onSubmit={manejarRegistro}>
+        <InputField
+          label="Nombre"
+          type="text"
+          name="nombre"
+          placeholder="Nombre"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
+        />
+        <InputField
+          label="Correo"
+          type="email"
+          name="correo"
+          placeholder="Correo"
+          value={correo}
+          onChange={(e) => setCorreo(e.target.value)}
+          required
+        />
+        <InputField
+          label="Contraseña"
+          type="password"
+          name="contrasena"
+          placeholder="Contraseña"
+          value={contrasena}
+          onChange={(e) => setContrasena(e.target.value)}
+          required
+        />
+        {loading ? <Spinner /> : <button type="submit">Registrarse</button>}
+      </form>
+      <ToastContainer position="top-center" autoClose={3000} />
+    </>
   );
 };
 
