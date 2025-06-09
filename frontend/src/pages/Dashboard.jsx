@@ -1,6 +1,6 @@
 // src/pages/Dashboard.jsx
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
 import { Link } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
@@ -23,30 +23,18 @@ const Dashboard = () => {
     let intervalId;
     const obtenerAlertas = async () => {
       try {
-        let datos = [];
-        let fromRedis = false;
-        // Intentar obtener alertas desde Redis vía endpoint local
-        try {
-          const res = await fetch(`http://localhost:5001/alertas-redis/${user.uid}`);
-          if (res.ok) {
-            datos = await res.json();
-            if (Array.isArray(datos) && datos.length > 0) {
-              fromRedis = true;
-            }
-          }
-        } catch (e) { /* ignorar */ }
-        // Si no hay datos en Redis, obtener de Firestore y cachear en Redis
-        if (!fromRedis) {
-          // Traer todas las alertas del usuario sin límite
-          const q = query(collection(db, "alertas"), orderBy("fecha"));
-          const snapshot = await getDocs(q);
-          console.log("[Dashboard] Total alertas en Firestore:", snapshot.docs.length);
-          datos = snapshot.docs
-            .map(doc => ({ id: doc.id, ...doc.data() }))
-            .filter(alerta => user && alerta.usuarioId === user.uid);
-          console.log("[Dashboard] Alertas del usuario:", datos.length);
+        // SIEMPRE obtener alertas desde Firestore primero
+        const alertasRef = collection(db, "alertas");
+        const snapshot = await getDocs(alertasRef);
+        const todas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log("[Dashboard] Total alertas en Firestore (IDs):", todas.map(a => a.id));
+        const sinFecha = todas.filter(a => !a.fecha);
+        if (sinFecha.length > 0) {
+          console.warn(`[Dashboard] Alertas sin campo 'fecha':`, sinFecha.length, sinFecha.map(a => a.id));
         }
-        // Siempre cachear en Redis vía endpoint local
+        const datos = todas.filter(alerta => user && alerta.usuarioId === user.uid);
+        console.log("[Dashboard] Alertas del usuario (IDs):", datos.map(a => a.id));
+        // Actualizar Redis con las alertas actuales
         if (datos.length > 0) {
           await fetch("http://localhost:5001/cache-alertas-redis", {
             method: "POST",
