@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 // Configuración de Redis local
-const redisClient = redis.createClient({ url: "redis://127.0.0.1:6379" });
+const redisClient = redis.createClient({url: "redis://127.0.0.1:6379" });
 redisClient.connect().catch(console.error);
 
 // Endpoint para obtener alertas desde Redis

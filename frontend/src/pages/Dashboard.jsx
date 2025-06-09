@@ -1,17 +1,28 @@
 // src/pages/Dashboard.jsx
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
 import { Link } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const [alertas, setAlertas] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Escuchar el estado de autenticación
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    let intervalId;
     const obtenerAlertas = async () => {
       try {
-        const user = auth.currentUser;
         let datos = [];
         let fromRedis = false;
         // Intentar obtener alertas desde Redis vía endpoint local
@@ -26,18 +37,22 @@ const Dashboard = () => {
         } catch (e) { /* ignorar */ }
         // Si no hay datos en Redis, obtener de Firestore y cachear en Redis
         if (!fromRedis) {
-          const snapshot = await getDocs(collection(db, "alertas"));
+          // Traer todas las alertas del usuario sin límite
+          const q = query(collection(db, "alertas"), orderBy("fecha"));
+          const snapshot = await getDocs(q);
+          console.log("[Dashboard] Total alertas en Firestore:", snapshot.docs.length);
           datos = snapshot.docs
             .map(doc => ({ id: doc.id, ...doc.data() }))
             .filter(alerta => user && alerta.usuarioId === user.uid);
-          // Cachear en Redis vía endpoint local
-          if (datos.length > 0) {
-            await fetch("http://localhost:5001/cache-alertas-redis", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ usuarioId: user.uid, alertas: datos })
-            });
-          }
+          console.log("[Dashboard] Alertas del usuario:", datos.length);
+        }
+        // Siempre cachear en Redis vía endpoint local
+        if (datos.length > 0) {
+          await fetch("http://localhost:5001/cache-alertas-redis", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ usuarioId: user.uid, alertas: datos })
+          });
         }
         setAlertas(datos);
       } catch (error) {
@@ -45,7 +60,9 @@ const Dashboard = () => {
       }
     };
     obtenerAlertas();
-  }, []);
+    intervalId = setInterval(obtenerAlertas, 3000); // refresca cada 3 segundos
+    return () => clearInterval(intervalId);
+  }, [user]);
 
   return (
     <div className="dash-container">
